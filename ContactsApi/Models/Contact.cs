@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ContactsApi.Models
 {
-    [Comment("Data about contacts")]
+    [Comment("Basic information about contacts")]
     public record Contact
     {
         [Required]

@@ -3,15 +3,17 @@ using System;
 using ContactsApi.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ContactsApi.Database.Migrations
 {
     [DbContext(typeof(AddressBookContext))]
-    partial class ContactContextModelSnapshot : ModelSnapshot
+    [Migration("20201219203550_ContactDataWithSeed")]
+    partial class ContactDataWithSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
