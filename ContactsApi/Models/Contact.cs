@@ -15,6 +15,7 @@ namespace ContactsApi.Models
         [MaxLength(50)]
         public string Surname { get; set; }
         public DateTime? DateOfBirth { get; set; }
+        [ConcurrencyCheck]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime CreatedOrUpdated { get; set; }
     }
