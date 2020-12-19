@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ContactsApi.Models;
+using ContactsApi.Dtos;
 using ContactsApi.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,15 +12,15 @@ namespace ContactsApi.Controllers
     [Produces("application/json")]
     public class ContactsController : ControllerBase
     {
-        private readonly IContactsService _contactsService;
+        private readonly IAddressBookService _addressBookService;
 
-        public ContactsController(IContactsService contactsService) =>
-            _contactsService = contactsService;
+        public ContactsController(IAddressBookService addressBookService) =>
+            _addressBookService = addressBookService;
 
         /// <summary>
-        /// Gets all contacts defined in the address book.
+        /// Gets all contacts defined in the address book with their's corresponding contact data.
         /// </summary>
-        /// <returns>An array of contacts</returns>
+        /// <returns>An array of contacts with an array of contact data.</returns>
         /// <remarks>
         /// Sample request:
         /// 
@@ -28,9 +28,10 @@ namespace ContactsApi.Controllers
         ///     {
         ///     }
         /// </remarks>
+        /// <response code="200">Data returned successfully (no data is also a correct response)</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Contact>>> GetContacts() =>
-            await _contactsService.GetUsersAsync();
+        public async Task<ActionResult<IEnumerable<ContactDto>>> GetContacts() =>
+            Ok(await _addressBookService.GetContactsAsync());
     }
 }

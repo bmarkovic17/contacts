@@ -4,8 +4,8 @@ using ContactsApi.Models;
 
 namespace ContactsApi.Repositories.Interfaces
 {
-    public interface IContactsRepository
+    public interface IContactDataRepository
     {
-        Task<List<Contact>> GetContactsAsync();
+        Task<List<ContactData>> GetContactDataAsync();
     }
 }

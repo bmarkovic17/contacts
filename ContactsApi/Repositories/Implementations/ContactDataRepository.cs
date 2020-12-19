@@ -7,14 +7,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ContactsApi.Repositories.Implementations
 {
-    public class ContactsRepository : IContactsRepository
+    public class ContactDataRepository : IContactDataRepository
     {
         private readonly AddressBookContext _addressBookContext;
 
-        public ContactsRepository(AddressBookContext addressBookContext) =>
+        public ContactDataRepository(AddressBookContext addressBookContext) =>
             _addressBookContext = addressBookContext;
 
-        public Task<List<Contact>> GetContactsAsync() =>
-            _addressBookContext.Contacts.ToListAsync();
+        public Task<List<ContactData>> GetContactDataAsync() =>
+            _addressBookContext.ContactData.ToListAsync();
     }
 }

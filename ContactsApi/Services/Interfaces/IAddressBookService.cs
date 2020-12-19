@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ContactsApi.Models;
+using ContactsApi.Dtos;
 
 namespace ContactsApi.Services.Interfaces
 {
-    public interface IContactsService
+    public interface IAddressBookService
     {
-        Task<List<Contact>> GetUsersAsync();
+        Task<List<ContactDto>> GetContactsAsync();
     }
 }

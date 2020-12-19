@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using AutoMapper;
 using ContactsApi.Database;
 using ContactsApi.Repositories.Implementations;
 using ContactsApi.Repositories.Interfaces;
@@ -44,8 +45,11 @@ namespace ContactsApi
 
             services.AddDbContext<AddressBookContext>();
 
-            services.AddScoped<IContactsService, ContactsService>();
             services.AddScoped<IContactsRepository, ContactsRepository>();
+            services.AddScoped<IContactDataRepository, ContactDataRepository>();
+            services.AddScoped<IAddressBookService, AddressBookService>();
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
