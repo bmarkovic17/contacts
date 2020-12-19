@@ -9,9 +9,9 @@ namespace ContactsApi.Repositories.Implementations
 {
     public class ContactsRepository : IContactsRepository
     {
-        private readonly ContactContext _contactContext;
+        private readonly AddressBookContext _contactContext;
 
-        public ContactsRepository(ContactContext contactContext) =>
+        public ContactsRepository(AddressBookContext contactContext) =>
             _contactContext = contactContext;
 
         public Task<List<Contact>> GetUsersAsync() =>

@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ContactsApi.Database.Migrations
 {
-    [DbContext(typeof(ContactContext))]
+    [DbContext(typeof(AddressBookContext))]
     [Migration("20201219070143_Create")]
     partial class Create
     {

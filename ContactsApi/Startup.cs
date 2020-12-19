@@ -42,14 +42,14 @@ namespace ContactsApi
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDbContext<ContactContext>();
+            services.AddDbContext<AddressBookContext>();
 
             services.AddScoped<IContactsService, ContactsService>();
             services.AddScoped<IContactsRepository, ContactsRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ContactContext contactContext)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, AddressBookContext addressBookContext)
         {
             if (env.IsDevelopment())
             {
@@ -58,7 +58,7 @@ namespace ContactsApi
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"));
             }
 
-            contactContext.Database.Migrate();
+            addressBookContext.Database.Migrate();
 
             app.UseHttpsRedirection();
 
