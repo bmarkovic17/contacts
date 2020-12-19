@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ContactsApi.Database.Migrations
 {
     [DbContext(typeof(ContactContext))]
-    [Migration("20201219081726_ContactsConcurrencyToken")]
+    [Migration("20201219125005_ContactsConcurrencyToken")]
     partial class ContactsConcurrencyToken
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,7 +65,7 @@ namespace ContactsApi.Database.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedOrUpdated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedOrUpdated = new DateTime(2020, 12, 19, 13, 50, 4, 752, DateTimeKind.Local).AddTicks(25),
                             DateOfBirth = new DateTime(1964, 9, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FirstName = "Keanu",
                             Surname = "Reeves"
@@ -73,7 +73,7 @@ namespace ContactsApi.Database.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedOrUpdated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedOrUpdated = new DateTime(2020, 12, 19, 13, 50, 4, 755, DateTimeKind.Local).AddTicks(4166),
                             DateOfBirth = new DateTime(1981, 8, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FirstName = "Roger",
                             Surname = "Federer"
@@ -81,7 +81,7 @@ namespace ContactsApi.Database.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedOrUpdated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedOrUpdated = new DateTime(2020, 12, 19, 13, 50, 4, 755, DateTimeKind.Local).AddTicks(4210),
                             DateOfBirth = new DateTime(1971, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FirstName = "Mark",
                             Surname = "Wahlberg"
@@ -89,13 +89,13 @@ namespace ContactsApi.Database.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedOrUpdated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedOrUpdated = new DateTime(2020, 12, 19, 13, 50, 4, 755, DateTimeKind.Local).AddTicks(4215),
                             FirstName = "Superman"
                         },
                         new
                         {
                             Id = 5,
-                            CreatedOrUpdated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedOrUpdated = new DateTime(2020, 12, 19, 13, 50, 4, 755, DateTimeKind.Local).AddTicks(4219),
                             DateOfBirth = new DateTime(1955, 10, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FirstName = "Bill",
                             Surname = "Gates"

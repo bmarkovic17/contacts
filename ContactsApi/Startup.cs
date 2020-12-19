@@ -37,7 +37,6 @@ namespace ContactsApi
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"));
             }
 
-            contactContext.Database.EnsureCreated();
             contactContext.Database.Migrate();
 
             app.UseHttpsRedirection();
