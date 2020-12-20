@@ -53,14 +53,28 @@ namespace ContactsApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ContactDto>> GetContacts(int id)
         {
-            ActionResult response;
-
             List<ContactDto> contacts = await _addressBookService.GetContactsAsync(id);
+
+            ActionResult response;
 
             if (contacts.Count == 1)
                 response = Ok(contacts);
             else
-                response = NotFound($"Contact with ID {id} doesn't exist.");
+            {
+                var problemDetails = new ProblemDetails
+                {
+                    Status = StatusCodes.Status404NotFound,
+                    Title = "Contact not found",
+                    Detail = $"Contact with ID {id} doesn't exist.",
+                    Instance = HttpContext.Request.Path
+                };
+
+                response = new ObjectResult(problemDetails)
+                {
+                    ContentTypes = { "application/problem+json" },
+                    StatusCode = StatusCodes.Status404NotFound
+                };
+            }
 
             return response;
         }
