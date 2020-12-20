@@ -10,6 +10,7 @@ using ContactsApi.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
@@ -18,6 +19,11 @@ namespace ContactsApi
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+
+        public Startup(IConfiguration configuration) =>
+            _configuration = configuration;
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -43,7 +49,10 @@ namespace ContactsApi
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDbContext<AddressBookContext>();
+            services.AddDbContext<AddressBookContext>(dbContextOptionsBuilder =>
+                dbContextOptionsBuilder
+                    .UseNpgsql(_configuration.GetConnectionString("DbConnection"))
+                    .UseSnakeCaseNamingConvention());
 
             services.AddScoped<IContactsRepository, ContactsRepository>();
             services.AddScoped<IContactDataRepository, ContactDataRepository>();

@@ -1,10 +1,16 @@
-using ContactsApi;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-CreateHostBuilder().Build().Run();
+namespace ContactsApi
+{
+    public class Program
+    {
+        public static void Main(string[] args) =>
+            CreateHostBuilder(args).Build().Run();
 
-static IHostBuilder CreateHostBuilder() =>
-    Host.CreateDefaultBuilder()
-        .ConfigureWebHostDefaults(webBuilder =>
-            webBuilder.UseStartup<Startup>());
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                    webBuilder.UseStartup<Startup>());
+    }
+}

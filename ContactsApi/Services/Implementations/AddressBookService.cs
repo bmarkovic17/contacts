@@ -30,14 +30,12 @@ namespace ContactsApi.Services.Implementations
                 .GetContacts()
                 .Where(contact => !id.HasValue || contact.Id == id)
                 .ToListAsync();
-            Debug.Assert(contacts.Any());
 
             IEnumerable<int> contactIds = contacts.Select(contact => contact.Id);
             List<ContactData> contactData = await _contactDataRepository
                 .GetContactData()
                 .Where(contactData => contactIds.Contains(contactData.ContactId))
                 .ToListAsync();
-            Debug.Assert(contactData.Any());
 
             List<ContactDto> addressBook = new List<ContactDto>();
             
@@ -48,8 +46,6 @@ namespace ContactsApi.Services.Implementations
                 addressBook.Last().ContactData = _mapper.Map<IEnumerable<ContactDataDto>>(
                     contactData.Where(contactData => contactData.ContactId == contact.Id));
             });
-
-            Debug.Assert(addressBook.Any());
 
             return addressBook;
         }
