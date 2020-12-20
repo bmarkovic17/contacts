@@ -5,10 +5,10 @@ using ContactsApi.Dtos;
 using ContactsApi.Repositories.Implementations;
 using ContactsApi.Services.Implementations;
 using ContactsApi.Services.Interfaces;
-using ContactsApiTests.Helpers;
+using ContactsApiTests.Fixtures;
 using Xunit;
 
-namespace ContactsApiTests.UnitTests
+namespace ContactsApiTests
 {
     public class AddressBookServiceUnitTest : IClassFixture<DatabaseFixture>, IClassFixture<AutoMapperFixture>
     {

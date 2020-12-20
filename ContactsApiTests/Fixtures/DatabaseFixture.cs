@@ -4,7 +4,7 @@ using ContactsApi.Database;
 using ContactsApi.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ContactsApiTests.Helpers
+namespace ContactsApiTests.Fixtures
 {
     public class DatabaseFixture : IAsyncDisposable
     {

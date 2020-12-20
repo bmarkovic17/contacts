@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ContactsApi.Helpers;
 
-namespace ContactsApiTests.Helpers
+namespace ContactsApiTests.Fixtures
 {
     public class AutoMapperFixture
     {
