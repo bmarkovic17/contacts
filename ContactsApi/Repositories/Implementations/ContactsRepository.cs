@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using ContactsApi.Database;
 using ContactsApi.Models;
 using ContactsApi.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace ContactsApi.Repositories.Implementations
 {
@@ -14,7 +12,7 @@ namespace ContactsApi.Repositories.Implementations
         public ContactsRepository(AddressBookContext addressBookContext) =>
             _addressBookContext = addressBookContext;
 
-        public Task<List<Contact>> GetContactsAsync() =>
-            _addressBookContext.Contacts.ToListAsync();
+        public IQueryable<Contact> GetContacts() =>
+            _addressBookContext.Contacts.AsQueryable();
     }
 }

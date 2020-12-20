@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 using ContactsApi.Database;
 using ContactsApi.Models;
 using ContactsApi.Repositories.Interfaces;
@@ -14,7 +14,7 @@ namespace ContactsApi.Repositories.Implementations
         public ContactDataRepository(AddressBookContext addressBookContext) =>
             _addressBookContext = addressBookContext;
 
-        public Task<List<ContactData>> GetContactDataAsync() =>
-            _addressBookContext.ContactData.ToListAsync();
+        public IQueryable<ContactData> GetContactData() =>
+            _addressBookContext.ContactData.AsQueryable();
     }
 }
