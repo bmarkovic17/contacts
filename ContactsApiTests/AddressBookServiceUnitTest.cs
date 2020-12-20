@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ContactsApi.Dtos;
@@ -16,6 +17,7 @@ namespace ContactsApiTests
 
         public AddressBookServiceUnitTest(DatabaseFixture databaseFixture, AutoMapperFixture autoMapperFixture) =>
             _addressBookService = new AddressBookService(
+                new AddressBookDatabase(databaseFixture.AddressBookContext),
                 new ContactsRepository(databaseFixture.AddressBookContext),
                 new ContactDataRepository(databaseFixture.AddressBookContext),
                 autoMapperFixture.Mapper);
@@ -54,6 +56,42 @@ namespace ContactsApiTests
 
             // Assert
             Assert.True(contacts.Count == 0, $"There is a contact with ID {id}.");
+        }
+
+        [Fact]
+        public async Task PostNonExistingContactAsync()
+        {
+            // Arrange
+            var postContact = new PostContactDto
+            {
+                FirstName = "Bill",
+                Surname = "Gates",
+                DateOfBirth = new DateTime(1955, 10, 28),
+                Street = "Pointe Lane",
+                AddressNumber = "4597",
+                Postcode = "33308",
+                City = "Fort Lauderdale",
+                Country = "Florida, US",
+                ContactData = new List<PostContactDataDto>
+                {
+                    new PostContactDataDto
+                    {
+                        ContactDataType = "PHONE",
+                        ContactDataValue = "0901000100"
+                    },
+                    new PostContactDataDto
+                    {
+                        ContactDataType = "MAIL",
+                        ContactDataValue = "bill.gates@mail.com"
+                    }
+                }
+            };
+
+            // Act
+            ContactDto contact = await _addressBookService.PostContactAsync(postContact);
+
+            // Assert
+            Assert.False(contact is null, "Contact couldn't be created.");
         }
     }
 }

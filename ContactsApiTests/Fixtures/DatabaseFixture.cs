@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using ContactsApi.Database;
 using ContactsApi.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace ContactsApiTests.Fixtures
 {
@@ -14,6 +15,7 @@ namespace ContactsApiTests.Fixtures
         {
             var dbContextOptions = new DbContextOptionsBuilder<AddressBookContext>()
                 .UseInMemoryDatabase(databaseName: "addressbook")
+                .ConfigureWarnings(warningsConfigurationBuilder => warningsConfigurationBuilder.Ignore(InMemoryEventId.TransactionIgnoredWarning))
                 .Options;
 
             AddressBookContext = new AddressBookContext(dbContextOptions);
@@ -169,40 +171,6 @@ namespace ContactsApiTests.Fixtures
                 ContactDataType = "PHONE",
                 ContactDataStatus = "Y",
                 ContactDataValue = "0900000002",
-                CreatedOrUpdated = DateTime.Now
-            });
-
-            AddressBookContext.Contacts.Add(new Contact
-            {
-                Id = 5,
-                FirstName = "Bill",
-                Surname = "Gates",
-                DateOfBirth = new DateTime(1955, 10, 28),
-                Street = "Pointe Lane",
-                AddressNumber = "4597",
-                Postcode = "33308",
-                City = "Fort Lauderdale",
-                Country = "Florida, US",
-                CreatedOrUpdated = DateTime.Now
-            });
-
-            AddressBookContext.ContactData.Add(new ContactData
-            {
-                Id = 11,
-                ContactId = 5,
-                ContactDataType = "PHONE",
-                ContactDataStatus = "Y",
-                ContactDataValue = "0901000100",
-                CreatedOrUpdated = DateTime.Now
-            });
-
-            AddressBookContext.ContactData.Add(new ContactData
-            {
-                Id = 12,
-                ContactId = 5,
-                ContactDataType = "MAIL",
-                ContactDataStatus = "Y",
-                ContactDataValue = "bill.gates@mail.com",
                 CreatedOrUpdated = DateTime.Now
             });
 

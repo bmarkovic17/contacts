@@ -2,7 +2,6 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using ContactsApiTests.Fixtures;
 using Xunit;
 
 namespace ContactsApiTests
