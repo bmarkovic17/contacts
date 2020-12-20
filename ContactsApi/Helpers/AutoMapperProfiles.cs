@@ -10,6 +10,8 @@ namespace ContactsApi.Helpers
         {
             CreateMap<Contact, ContactDto>();
             CreateMap<ContactData, ContactDataDto>();
+            CreateMap<PostContactDto, Contact>();
+            CreateMap<PostContactDataDto, ContactData>();
         }
     }
 }

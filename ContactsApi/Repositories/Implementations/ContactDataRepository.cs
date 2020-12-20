@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ContactsApi.Database;
 using ContactsApi.Models;
 using ContactsApi.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace ContactsApi.Repositories.Implementations
 {
@@ -16,5 +16,14 @@ namespace ContactsApi.Repositories.Implementations
 
         public IQueryable<ContactData> GetContactData() =>
             _addressBookContext.ContactData.AsQueryable();
+
+        public async Task<IEnumerable<ContactData>> PostContactDataAsync(IEnumerable<ContactData> contactData)
+        {
+            _addressBookContext.ContactData.AddRange(contactData);
+
+            await _addressBookContext.SaveChangesAsync();
+
+            return contactData;
+        }
     }
 }

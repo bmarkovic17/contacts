@@ -54,6 +54,7 @@ namespace ContactsApi
                     .UseNpgsql(_configuration.GetConnectionString("DbConnection"))
                     .UseSnakeCaseNamingConvention());
 
+            services.AddScoped<IAddressBookDatabase, AddressBookDatabase>();
             services.AddScoped<IContactsRepository, ContactsRepository>();
             services.AddScoped<IContactDataRepository, ContactDataRepository>();
             services.AddScoped<IAddressBookService, AddressBookService>();

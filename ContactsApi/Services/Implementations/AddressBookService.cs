@@ -13,12 +13,18 @@ namespace ContactsApi.Services.Implementations
 {
     public class AddressBookService : IAddressBookService
     {
+        private readonly IAddressBookDatabase _addressBookDatabase;
         private readonly IContactsRepository _contactsRepository;
         private readonly IContactDataRepository _contactDataRepository;
         private readonly IMapper _mapper;
 
-        public AddressBookService(IContactsRepository contactsRepository, IContactDataRepository contactDataRepository, IMapper mapper)
+        public AddressBookService(
+            IAddressBookDatabase addressBookDatabase,
+            IContactsRepository contactsRepository,
+            IContactDataRepository contactDataRepository,
+            IMapper mapper)
         {
+            _addressBookDatabase = addressBookDatabase;
             _contactsRepository = contactsRepository;
             _contactDataRepository = contactDataRepository;
             _mapper = mapper;
@@ -48,6 +54,32 @@ namespace ContactsApi.Services.Implementations
             });
 
             return addressBook;
+        }
+
+        public async Task<ContactDto> PostContactAsync(PostContactDto postContactDto)
+        {
+            _ = await _addressBookDatabase.BeginTransactionAsync();
+
+            var contact = _mapper.Map<Contact>(postContactDto);
+            contact = await _contactsRepository.PostContactAsync(contact);
+            
+            var contactData = _mapper
+                .Map<IEnumerable<ContactData>>(postContactDto.ContactData)
+                .Select(contactData => new ContactData
+                {
+                    ContactId = contact.Id,
+                    ContactDataStatus = "Y",
+                    ContactDataType = contactData.ContactDataType,
+                    ContactDataValue = contactData.ContactDataValue
+                });
+            contactData = await _contactDataRepository.PostContactDataAsync(contactData);
+
+            ContactDto contactDto = _mapper.Map<ContactDto>(contact);
+            contactDto.ContactData = _mapper.Map<IEnumerable<ContactDataDto>>(contactData);
+
+            await _addressBookDatabase.CommitAsync();
+
+            return contactDto;
         }
     }
 }

@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ContactsApi.Dtos;
 using ContactsApi.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace ContactsApi.Controllers
 {
@@ -32,7 +36,7 @@ namespace ContactsApi.Controllers
         /// <response code="200">Data returned successfully (no data is also a correct response)</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<ContactDto>>> GetContacts() =>
+        public async Task<ActionResult<IEnumerable<ContactDto>>> Get() =>
             Ok(await _addressBookService.GetContactsAsync(null));
 
         /// <summary>
@@ -51,7 +55,7 @@ namespace ContactsApi.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ContactDto>> GetContacts(int id)
+        public async Task<ActionResult<ContactDto>> Get(int id)
         {
             List<ContactDto> contacts = await _addressBookService.GetContactsAsync(id);
 
@@ -74,6 +78,96 @@ namespace ContactsApi.Controllers
                     ContentTypes = { "application/problem+json" },
                     StatusCode = StatusCodes.Status404NotFound
                 };
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// Creates a new contact with contact data if given in the address book.
+        /// </summary>
+        /// <returns>A newly created contact with an array of contact data.</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/Contacts
+        ///     {
+        ///         "firstName": "Keanu",
+        ///         "surname": "Reeves",
+        ///         "dateOfBirth": "1964-09-02T00:00:00",
+        ///         "street": "Linda Ave.",
+        ///         "addressNumber": "8106",
+        ///         "postcode": "12302",
+        ///         "city": "Schenectady",
+        ///         "country": "New York, US",
+        ///         "contactData": [
+        ///             {
+        ///                 "contactDataType": "PHONE",
+        ///                 "contactDataValue": "0900000000"
+        ///             },
+        ///             {
+        ///                 "contactDataType": "PHONE",
+        ///                 "contactDataValue": "0900000001"
+        ///             },
+        ///             {
+        ///                 "contactDataType": "MAIL",
+        ///                 "contactDataValue": "keanu.reeves@mail.com"
+        ///             }
+        ///         ]
+        ///     }
+        /// </remarks>
+        /// <response code="201">Contact successfully created</response>
+        /// <response code="400">Problem with given contact for creation</response>
+        /// <response code="500">Problem with the service</response>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> Post(PostContactDto postContactDto)
+        {
+            ActionResult response;
+
+            try
+            {
+                ContactDto contact = await _addressBookService.PostContactAsync(postContactDto);
+
+                response = Created($"{Request.GetEncodedUrl()}/{contact.Id}", contact);
+            }
+            catch (DbUpdateException ex)
+            {
+                ProblemDetails problemDetails;
+
+                if (ex.GetBaseException() is PostgresException postgresException && postgresException.SqlState == PostgresErrorCodes.UniqueViolation)
+                {
+                    problemDetails = new ProblemDetails
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Title = "Contact already exists",
+                        Detail = "Given contact already exists in the address book.",
+                        Instance = HttpContext.Request.Path
+                    };
+
+                    response = new ObjectResult(problemDetails)
+                    {
+                        ContentTypes = { "application/problem+json" },
+                        StatusCode = StatusCodes.Status400BadRequest
+                    };
+                }
+                else
+                {
+                    problemDetails = new ProblemDetails
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Title = "There was an error during the saving process",
+                        Instance = HttpContext.Request.Path
+                    };
+
+                    response = new ObjectResult(problemDetails)
+                    {
+                        ContentTypes = { "application/problem+json" },
+                        StatusCode = StatusCodes.Status400BadRequest
+                    };
+                }
             }
 
             return response;

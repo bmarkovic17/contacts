@@ -7,5 +7,6 @@ namespace ContactsApi.Services.Interfaces
     public interface IAddressBookService
     {
         Task<List<ContactDto>> GetContactsAsync(int? id);
+        Task<ContactDto> PostContactAsync(PostContactDto postContactDto);
     }
 }
