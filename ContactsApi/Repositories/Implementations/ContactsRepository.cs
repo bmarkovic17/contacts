@@ -20,9 +20,18 @@ namespace ContactsApi.Repositories.Implementations
         {
             _addressBookContext.Contacts.Add(contact);
 
-            await _addressBookContext.SaveChangesAsync();
+            _ = await _addressBookContext.SaveChangesAsync();
 
             return contact;
+        }
+
+        public Task<int> DeleteContactAsync(Contact contact)
+        {
+            _addressBookContext.Contacts.Remove(contact);
+
+            var rowCount = _addressBookContext.SaveChangesAsync();
+
+            return rowCount;
         }
     }
 }

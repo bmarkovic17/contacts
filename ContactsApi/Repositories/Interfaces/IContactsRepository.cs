@@ -8,5 +8,6 @@ namespace ContactsApi.Repositories.Interfaces
     {
         IQueryable<Contact> GetContacts();
         Task<Contact> PostContactAsync(Contact contact);
+        Task<int> DeleteContactAsync(Contact contact);
     }
 }

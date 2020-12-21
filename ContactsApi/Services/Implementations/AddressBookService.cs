@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -81,5 +80,8 @@ namespace ContactsApi.Services.Implementations
 
             return contactDto;
         }
+
+        public Task<int> DeleteContactAsync(DeleteContactDto deleteContactDto) =>
+            _contactsRepository.DeleteContactAsync(_mapper.Map<Contact>(deleteContactDto));
     }
 }

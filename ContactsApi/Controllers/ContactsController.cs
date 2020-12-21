@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ContactsApi.Dtos;
 using ContactsApi.Services.Interfaces;
@@ -159,6 +157,74 @@ namespace ContactsApi.Controllers
                     {
                         Status = StatusCodes.Status400BadRequest,
                         Title = "There was an error during the saving process",
+                        Instance = HttpContext.Request.Path
+                    };
+
+                    response = new ObjectResult(problemDetails)
+                    {
+                        ContentTypes = { "application/problem+json" },
+                        StatusCode = StatusCodes.Status400BadRequest
+                    };
+                }
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// Removes an existing contact with contact data from the address book.
+        /// </summary>
+        /// <returns>No content.</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     DELETE /api/Contacts
+        ///     {
+        ///         "id": 6,
+        ///         "createdOrUpdated": "2020-12-20T23:20:59.2401"
+        ///     }
+        /// </remarks>
+        /// <response code="204">Contact successfully deleted</response>
+        /// <response code="400">Contact with given ID doesn't exist</response>
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> Delete(DeleteContactDto deleteContactDto)
+        {
+            ActionResult response;
+
+            try
+            {
+                _ = await _addressBookService.DeleteContactAsync(deleteContactDto);
+
+                response = NoContent();
+            }
+            catch (DbUpdateException ex)
+            {
+                ProblemDetails problemDetails;
+
+                if (ex.GetBaseException() is DbUpdateConcurrencyException)
+                {
+                    problemDetails = new ProblemDetails
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Title = "Contact maybe doesn't exists",
+                        Detail = $"Contact with ID {deleteContactDto.Id} isn't in the address book or has changed since fetching data.",
+                        Instance = HttpContext.Request.Path
+                    };
+
+                    response = new ObjectResult(problemDetails)
+                    {
+                        ContentTypes = { "application/problem+json" },
+                        StatusCode = StatusCodes.Status400BadRequest
+                    };
+                }
+                else
+                {
+                    problemDetails = new ProblemDetails
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Title = "There was an error during the deleting process",
                         Instance = HttpContext.Request.Path
                     };
 

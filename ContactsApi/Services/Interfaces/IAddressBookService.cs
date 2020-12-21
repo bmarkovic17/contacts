@@ -8,5 +8,6 @@ namespace ContactsApi.Services.Interfaces
     {
         Task<List<ContactDto>> GetContactsAsync(int? id);
         Task<ContactDto> PostContactAsync(PostContactDto postContactDto);
+        Task<int> DeleteContactAsync(DeleteContactDto deleteContactDto);
     }
 }

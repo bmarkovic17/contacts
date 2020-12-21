@@ -21,7 +21,7 @@ namespace ContactsApi.Repositories.Implementations
         {
             _addressBookContext.ContactData.AddRange(contactData);
 
-            await _addressBookContext.SaveChangesAsync();
+            _ = await _addressBookContext.SaveChangesAsync();
 
             return contactData;
         }
