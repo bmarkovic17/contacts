@@ -12,16 +12,17 @@ using Xunit;
 namespace ContactsApiTests
 {
     [Collection("Automapper collection")]
-    public class AddressBookServiceUnitTest : IClassFixture<DatabaseFixture>
+    public class AddressBookServiceUnitTest : IClassFixture<DatabaseFixture>, IClassFixture<ConfigurationFixture>
     {
         private readonly IAddressBookService _addressBookService;
 
-        public AddressBookServiceUnitTest(DatabaseFixture databaseFixture, AutoMapperFixture autoMapperFixture) =>
+        public AddressBookServiceUnitTest(DatabaseFixture databaseFixture, AutoMapperFixture autoMapperFixture, ConfigurationFixture configurationFixture) =>
             _addressBookService = new AddressBookService(
                 new AddressBookDatabase(databaseFixture.AddressBookContext),
                 new ContactsRepository(databaseFixture.AddressBookContext),
                 new ContactDataRepository(databaseFixture.AddressBookContext),
-                autoMapperFixture.Mapper);
+                autoMapperFixture.Mapper,
+                configurationFixture.Configuration);
 
         [Fact]
         public async Task GetAllContactsAsync()

@@ -41,17 +41,18 @@ namespace ContactsApi.Services.Implementations
 
             if (string.IsNullOrWhiteSpace(search) || search.Length > 2)
             {
-
                 var sqlSearch = $"%{search}%";
 
                 PaginatedList<Contact> contacts = await PaginatedList<Contact>.CreateAsync(
                     _contactsRepository
                         .GetContacts()
                         .Where(contact =>
-                            EF.Functions.ILike(contact.FirstName, sqlSearch) ||
-                            EF.Functions.ILike(contact.Surname, sqlSearch) ||
-                            EF.Functions.ILike(contact.Street, sqlSearch) ||
-                            EF.Functions.ILike(contact.City, sqlSearch)),
+                            (id.HasValue && contact.Id == id) ||
+                            (!id.HasValue &&
+                            (EF.Functions.Like(contact.FirstName, sqlSearch) ||
+                            EF.Functions.Like(contact.Surname, sqlSearch) ||
+                            EF.Functions.Like(contact.Street, sqlSearch) ||
+                            EF.Functions.Like(contact.City, sqlSearch)))),
                     pageNumber ?? 1,
                     _configuration.GetValue("PageSize", 10));
 
