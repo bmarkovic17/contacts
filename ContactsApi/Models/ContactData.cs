@@ -15,10 +15,6 @@ namespace ContactsApi.Models
         [Comment("Code which designates type of contact data (e.g. phone, mail, ...)")]
         public string ContactDataType { get; set; }
         [Required]
-        [MaxLength(1)]
-        [Comment("Flag which tells if a contact data is active or marked as deleted")]
-        public string ContactDataStatus { get; set; }
-        [Required]
         [MaxLength(50)]
         [Comment("Concrete value of contact data (e.g. contact's phone number)")]
         public string ContactDataValue { get; set; }

@@ -67,7 +67,6 @@ namespace ContactsApi.Services.Implementations
                 .Select(contactData => new ContactData
                 {
                     ContactId = contact.Id,
-                    ContactDataStatus = "Y",
                     ContactDataType = contactData.ContactDataType,
                     ContactDataValue = contactData.ContactDataValue
                 });
@@ -113,6 +112,87 @@ namespace ContactsApi.Services.Implementations
             ContactDto contact = (await GetContactsAsync(contactId)).Single();
 
             return _mapper.Map<List<ContactDataDto>>(contact.ContactData);
+        }
+
+        public async Task<PostContactForContactDataDto> PostContactDataAsync(PostContactForContactDataDto postContactForContactDataDto)
+        {
+            _ = await _addressBookDatabase.BeginTransactionAsync();
+
+            Contact contact = _contactsRepository
+                .GetContacts()
+                .AsNoTracking()
+                .Single(contact => contact.Id == postContactForContactDataDto.ContactId);
+
+            IEnumerable<ContactData> contactData = await _contactDataRepository
+                .GetContactData()
+                .AsNoTracking()
+                .Where(contactData => contactData.ContactId == contact.Id)
+                .ToListAsync();
+
+            IEnumerable<ContactData> contactDataWithId = _mapper.Map<IEnumerable<ContactData>>(
+                postContactForContactDataDto.ContactData
+                    .Where(contactData => contactData.Id.HasValue));
+
+            Queue<ContactData> contactDataToDelete = new Queue<ContactData>();
+
+            foreach (ContactData c1 in contactData)
+            {
+                var exists = false;
+
+                foreach (ContactData c2 in contactDataWithId)
+                {
+                    if (c2.Id == c1.Id)
+                    {
+                        exists = true;
+
+                        break;
+                    }
+                }
+
+                if (!exists)
+                    contactDataToDelete.Enqueue(c1);
+            }
+
+            // Delete
+            if (contactDataToDelete.Any())
+                _ = await _contactDataRepository.DeleteContactAsync(contactDataToDelete);
+
+            // Update
+            if (contactDataWithId.Any())
+            {
+                _ = await _contactDataRepository.DeleteContactAsync(contactDataWithId.Except(contactDataToDelete));
+
+                _ = await _contactDataRepository.PostContactDataAsync(contactDataWithId
+                    .Select(addContactData => new ContactData
+                    {
+                        ContactId = contact.Id,
+                        ContactDataType = addContactData.ContactDataType,
+                        ContactDataValue = addContactData.ContactDataValue,
+                    }));
+            }
+
+            IEnumerable<ContactData> contactDataWithoutId = _mapper.Map<IEnumerable<ContactData>>(
+                postContactForContactDataDto.ContactData
+                    .Where(contactData => contactData.Id is null));
+
+            // Create
+            if (contactDataWithoutId.Any())
+            {
+                foreach (var addContactData in contactDataWithoutId)
+                {
+                    addContactData.ContactId = contact.Id;
+                }
+                
+                _ = await _contactDataRepository.PostContactDataAsync(contactDataWithoutId);
+            }
+
+            await _addressBookDatabase.CommitAsync();
+
+            return new PostContactForContactDataDto
+            {
+                ContactId = postContactForContactDataDto.ContactId,
+                ContactData = _mapper.Map<IEnumerable<PostContactDataForContactDto>>(await GetContactDataAsync(postContactForContactDataDto.ContactId))
+            };
         }
     }
 }

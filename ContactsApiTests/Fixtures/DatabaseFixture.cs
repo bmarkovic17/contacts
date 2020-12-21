@@ -39,7 +39,6 @@ namespace ContactsApiTests.Fixtures
                 Id = 1,
                 ContactId = 1,
                 ContactDataType = "PHONE",
-                ContactDataStatus = "Y",
                 ContactDataValue = "0900000000",
                 CreatedOrUpdated = DateTime.Now
             });
@@ -49,7 +48,6 @@ namespace ContactsApiTests.Fixtures
                 Id = 2,
                 ContactId = 1,
                 ContactDataType = "PHONE",
-                ContactDataStatus = "Y",
                 ContactDataValue = "0900000001",
                 CreatedOrUpdated = DateTime.Now
             });
@@ -59,7 +57,6 @@ namespace ContactsApiTests.Fixtures
                 Id = 3,
                 ContactId = 1,
                 ContactDataType = "MAIL",
-                ContactDataStatus = "Y",
                 ContactDataValue = "keanu.reeves@mail.com",
                 CreatedOrUpdated = DateTime.Now
             });
@@ -83,7 +80,6 @@ namespace ContactsApiTests.Fixtures
                 Id = 4,
                 ContactId = 2,
                 ContactDataType = "PHONE",
-                ContactDataStatus = "Y",
                 ContactDataValue = "0900000100",
                 CreatedOrUpdated = DateTime.Now
             });
@@ -93,7 +89,6 @@ namespace ContactsApiTests.Fixtures
                 Id = 5,
                 ContactId = 2,
                 ContactDataType = "MAIL",
-                ContactDataStatus = "Y",
                 ContactDataValue = "roger.federer@mail.com",
                 CreatedOrUpdated = DateTime.Now
             });
@@ -103,7 +98,6 @@ namespace ContactsApiTests.Fixtures
                 Id = 6,
                 ContactId = 2,
                 ContactDataType = "MAIL",
-                ContactDataStatus = "Y",
                 ContactDataValue = "roger.federer@anothermail.com",
                 CreatedOrUpdated = DateTime.Now
             });
@@ -127,7 +121,6 @@ namespace ContactsApiTests.Fixtures
                 Id = 7,
                 ContactId = 3,
                 ContactDataType = "PHONE",
-                ContactDataStatus = "Y",
                 ContactDataValue = "0900000200",
                 CreatedOrUpdated = DateTime.Now
             });
@@ -137,7 +130,6 @@ namespace ContactsApiTests.Fixtures
                 Id = 8,
                 ContactId = 3,
                 ContactDataType = "MAIL",
-                ContactDataStatus = "Y",
                 ContactDataValue = "mark.wahlberg@mail.com",
                 CreatedOrUpdated = DateTime.Now
             });
@@ -159,7 +151,6 @@ namespace ContactsApiTests.Fixtures
                 Id = 9,
                 ContactId = 4,
                 ContactDataType = "MAIL",
-                ContactDataStatus = "Y",
                 ContactDataValue = "superman@mail.com",
                 CreatedOrUpdated = DateTime.Now
             });
@@ -169,7 +160,6 @@ namespace ContactsApiTests.Fixtures
                 Id = 10,
                 ContactId = 4,
                 ContactDataType = "PHONE",
-                ContactDataStatus = "Y",
                 ContactDataValue = "0900000002",
                 CreatedOrUpdated = DateTime.Now
             });

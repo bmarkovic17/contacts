@@ -25,5 +25,14 @@ namespace ContactsApi.Repositories.Implementations
 
             return contactData;
         }
+
+        public async Task<int> DeleteContactAsync(IEnumerable<ContactData> contactData)
+        {
+            _addressBookContext.ContactData.RemoveRange(contactData);
+
+            var rowCount = await _addressBookContext.SaveChangesAsync();
+
+            return rowCount;
+        }
     }
 }

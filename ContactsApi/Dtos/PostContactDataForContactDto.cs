@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace ContactsApi.Dtos
 {
     public class PostContactDataForContactDto
     {
+        public int? Id { get; set; }
         [Required]
-        public int ContactId { get; set; }
+        public string ContactDataType { get; set; }
         [Required]
-        public IEnumerable<PostContactDataDto> ContactData { get; set; }
+        public string ContactDataValue { get; set; }
+        public DateTime? CreatedOrUpdated { get; set; }
     }
 }

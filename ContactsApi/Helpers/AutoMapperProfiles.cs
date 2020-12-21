@@ -9,7 +9,8 @@ namespace ContactsApi.Helpers
         public AutoMapperProfiles()
         {
             CreateMap<Contact, ContactDto>();
-            CreateMap<ContactData, ContactDataDto>();
+            CreateMap<ContactData, ContactDataDto>()
+                .ReverseMap();
             CreateMap<PostContactDto, Contact>();
             CreateMap<PostContactDto, ContactDto>();
             CreateMap<PostContactDataDto, ContactData>();
@@ -19,6 +20,9 @@ namespace ContactsApi.Helpers
             CreateMap<PutContactDto, Contact>()
                 .ReverseMap();
             CreateMap<ContactDto, PutContactDto>();
+            CreateMap<PostContactDataForContactDto, ContactDataDto>()
+                .ReverseMap();
+            CreateMap<PostContactDataForContactDto, ContactData>();
         }
     }
 }

@@ -11,5 +11,6 @@ namespace ContactsApi.Services.Interfaces
         Task<int> DeleteContactAsync(DeleteContactDto deleteContactDto);
         Task<PutContactDto> PutContactAsync(PutContactDto putContactDto);
         Task<List<ContactDataDto>> GetContactDataAsync(int contactId);
+        Task<PostContactForContactDataDto> PostContactDataAsync(PostContactForContactDataDto postContactForContactDataDto);
     }
 }

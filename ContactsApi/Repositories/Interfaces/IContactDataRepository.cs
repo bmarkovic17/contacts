@@ -9,5 +9,6 @@ namespace ContactsApi.Repositories.Interfaces
     {
         IQueryable<ContactData> GetContactData();
         Task<IEnumerable<ContactData>> PostContactDataAsync(IEnumerable<ContactData> contactData);
+        Task<int> DeleteContactAsync(IEnumerable<ContactData> contactData);
     }
 }
