@@ -83,5 +83,29 @@ namespace ContactsApi.Services.Implementations
 
         public Task<int> DeleteContactAsync(DeleteContactDto deleteContactDto) =>
             _contactsRepository.DeleteContactAsync(_mapper.Map<Contact>(deleteContactDto));
+
+        public async Task<PutContactDto> PutContactAsync(PutContactDto putContactDto)
+        {
+            Contact contact = await _contactsRepository
+                .GetContacts()
+                .SingleAsync(contact => contact.Id == putContactDto.Id);
+
+            contact.FirstName = putContactDto.FirstName;
+            contact.Surname = putContactDto.Surname;
+            contact.DateOfBirth = putContactDto.DateOfBirth;
+            contact.Street = putContactDto.Street;
+            contact.AddressNumber = putContactDto.AddressNumber;
+            contact.Postcode = putContactDto.Postcode;
+            contact.City = putContactDto.City;
+            contact.Country = putContactDto.Country;
+            contact.CreatedOrUpdated = putContactDto.CreatedOrUpdated;
+
+            await _addressBookDatabase.SaveChangesAsync();
+
+            return _mapper
+                .Map<PutContactDto>(await _contactsRepository
+                    .GetContacts()
+                    .SingleAsync(contact => contact.Id == putContactDto.Id));
+        }
     }
 }

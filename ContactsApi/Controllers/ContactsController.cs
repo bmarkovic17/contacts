@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ContactsApi.Dtos;
 using ContactsApi.Services.Interfaces;
@@ -225,6 +226,82 @@ namespace ContactsApi.Controllers
                     {
                         Status = StatusCodes.Status400BadRequest,
                         Title = "There was an error during the deleting process",
+                        Instance = HttpContext.Request.Path
+                    };
+
+                    response = new ObjectResult(problemDetails)
+                    {
+                        ContentTypes = { "application/problem+json" },
+                        StatusCode = StatusCodes.Status400BadRequest
+                    };
+                }
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// Updates an existing contact without contact data in the address book.
+        /// </summary>
+        /// <returns>Updated contact without contact data.</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     PUT /api/Contacts
+        ///     {
+        ///	        "id": 17,
+        ///	        "firstName": "Boris",
+        ///	        "surname": "Reeves",
+        ///	        "dateOfBirth": "1964-09-02T00:00:00",
+        ///	        "street": "Linda Ave.",
+        ///	        "addressNumber": "8106",
+        ///	        "postcode": "12302",
+        ///	        "city": "Schenectady",
+        ///	        "country": "New York, US",
+        ///	        "createdOrUpdated": "2020-12-21T03:24:57.82887"
+        ///     }
+        /// </remarks>
+        /// <response code="200">Contact successfully updated</response>
+        /// <response code="400">Contact with given ID doesn't exist</response>
+        /// <response code="500">Problem with the service</response>
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> Put(PutContactDto putContactDto)
+        {
+            ActionResult response;
+
+            try
+            {
+                response = Ok(await _addressBookService.PutContactAsync(putContactDto));
+            }
+            catch (Exception ex)
+            {
+                ProblemDetails problemDetails;
+
+                if (ex.GetBaseException() is InvalidOperationException)
+                {
+                    problemDetails = new ProblemDetails
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Title = "Contact maybe doesn't exists",
+                        Detail = $"Contact with ID {putContactDto.Id} isn't in the address book or has changed since fetching data.",
+                        Instance = HttpContext.Request.Path
+                    };
+
+                    response = new ObjectResult(problemDetails)
+                    {
+                        ContentTypes = { "application/problem+json" },
+                        StatusCode = StatusCodes.Status400BadRequest
+                    };
+                }
+                else
+                {
+                    problemDetails = new ProblemDetails
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Title = "There was an error during the updating process",
                         Instance = HttpContext.Request.Path
                     };
 
