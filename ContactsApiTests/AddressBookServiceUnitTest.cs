@@ -94,5 +94,93 @@ namespace ContactsApiTests
             // Assert
             Assert.False(contact is null, "Contact couldn't be created.");
         }
+
+        [Fact]
+        public async Task DeleteNonExistingContactAsync()
+        {
+            // Arrange
+            int rowCount = -1;
+            var deleteContact = new DeleteContactDto
+            {
+                Id = 5,
+                CreatedOrUpdated = DateTime.Now
+            };
+
+            // Act
+            try
+            {
+                rowCount = await _addressBookService.DeleteContactAsync(deleteContact);
+            }
+            catch (Exception)
+            {
+            }
+
+            // Assert
+            Assert.True(rowCount == -1, "Non existent contact deleted.");
+        }
+
+        [Fact]
+        public async Task UpdateNonExistingContactAsync()
+        {
+            // Arrange
+            PutContactDto contact = null;
+            var putContact = new PutContactDto
+            {
+                Id = 5,
+                FirstName = "Melinda",
+                Surname = "Gates",
+                DateOfBirth = new DateTime(1955, 10, 28),
+                Street = "Pointe Lane",
+                AddressNumber = "4597",
+                Postcode = "33308",
+                City = "Fort Lauderdale",
+                Country = "Florida, US",
+                CreatedOrUpdated = DateTime.Now
+            };
+
+            // Act
+            try
+            {
+                contact = await _addressBookService.PutContactAsync(putContact);
+            }
+            catch (Exception)
+            {
+            }
+
+            // Assert
+            Assert.True(contact is null, "Non existing contact updated.");
+        }
+
+        [Fact]
+        public async Task UpdateExistingContactAsync()
+        {
+            // Arrange
+            PutContactDto contact = null;
+            var putContact = new PutContactDto
+            {
+                Id = 3,
+                FirstName = "Paul",
+                Surname = "Wahlberg",
+                DateOfBirth = new DateTime(1971, 6, 5),
+                Street = "Erlenweg",
+                AddressNumber = "57",
+                Postcode = "3027",
+                City = "Bern",
+                Country = "Switzerland",
+                CreatedOrUpdated = new DateTime(2020, 12, 21)
+            };
+
+            // Act
+            try
+            {
+                contact = await _addressBookService.PutContactAsync(putContact);
+            }
+            catch (Exception)
+            {
+            }
+
+            // Assert
+            Assert.True(contact.FirstName == "Paul", "Contact couldn't be updated.");
+        }
     }
 }

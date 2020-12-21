@@ -119,7 +119,7 @@ namespace ContactsApiTests.Fixtures
                 Postcode = "3027",
                 City = "Bern",
                 Country = "Switzerland",
-                CreatedOrUpdated = DateTime.Now
+                CreatedOrUpdated = new DateTime(2020, 12, 21)
             });
 
             AddressBookContext.ContactData.Add(new ContactData
