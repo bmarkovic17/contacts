@@ -18,6 +18,7 @@ namespace ContactsApi.Helpers
             CreateMap<ContactDto, DeleteContactDto>();
             CreateMap<PutContactDto, Contact>()
                 .ReverseMap();
+            CreateMap<ContactDto, PutContactDto>();
         }
     }
 }

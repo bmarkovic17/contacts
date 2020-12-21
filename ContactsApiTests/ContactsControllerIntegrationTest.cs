@@ -135,5 +135,32 @@ namespace ContactsApiTests
             // Assert
             Assert.True(response.StatusCode == HttpStatusCode.NoContent);
         }
+
+        [Fact]
+        public async Task UpdateExistingContactAsync()
+        {
+            // Arrange
+            var endpoint = "contacts";
+            var contact = (await _httpClient.GetFromJsonAsync<IEnumerable<ContactDto>>(endpoint)).FirstOrDefault();
+
+            if (contact is null)
+            {
+                await PostNonExistingContactAsync();
+                contact = (await _httpClient.GetFromJsonAsync<IEnumerable<ContactDto>>(endpoint)).FirstOrDefault();
+            }
+
+            var updateContact = _mapper.Map<PutContactDto>(contact);
+            char[] firstNameCharArray = updateContact.FirstName.ToCharArray();
+            Array.Reverse(firstNameCharArray);
+            updateContact.FirstName = new string(firstNameCharArray);
+
+            // Act
+            HttpResponseMessage response = await _httpClient.PutAsJsonAsync(endpoint, updateContact);
+            PutContactDto updatedContact = await response.Content.ReadFromJsonAsync<PutContactDto>();
+
+            // Assert
+            Assert.True(response.StatusCode == HttpStatusCode.OK);
+            Assert.True(updatedContact.FirstName != contact.FirstName);
+        }
     }
 }
