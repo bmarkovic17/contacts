@@ -97,6 +97,7 @@ namespace ContactsApiTests
                     Method = HttpMethod.Delete,
                     RequestUri = new Uri($"{_httpClient.BaseAddress}{endpoint}")
                 };
+                _ = await _httpClient.SendAsync(request);
             }
 
             // Act

@@ -41,6 +41,7 @@ namespace ContactsApi.Controllers
         /// <summary>
         /// For given ID gets a single contact defined in the address book with his corresponding contact data.
         /// </summary>
+        /// <param name="id">Contact ID for which data is fetched.</param>
         /// <returns>A contact with an array of contact data.</returns>
         /// <remarks>
         /// Sample request:

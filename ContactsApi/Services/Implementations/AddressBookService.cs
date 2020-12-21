@@ -107,5 +107,15 @@ namespace ContactsApi.Services.Implementations
                     .GetContacts()
                     .SingleAsync(contact => contact.Id == putContactDto.Id));
         }
+
+        public async Task<List<ContactDataDto>> GetContactDataAsync(int contactId)
+        {
+            List<ContactData> contactData = await _contactDataRepository
+                .GetContactData()
+                .Where(singleContactData => singleContactData.ContactId == contactId)
+                .ToListAsync();
+
+            return _mapper.Map<List<ContactDataDto>>(contactData);
+        }
     }
 }
