@@ -11,7 +11,8 @@ using Xunit;
 
 namespace ContactsApiTests
 {
-    public class AddressBookServiceUnitTest : IClassFixture<DatabaseFixture>, IClassFixture<AutoMapperFixture>
+    [Collection("Automapper collection")]
+    public class AddressBookServiceUnitTest : IClassFixture<DatabaseFixture>
     {
         private readonly IAddressBookService _addressBookService;
 
