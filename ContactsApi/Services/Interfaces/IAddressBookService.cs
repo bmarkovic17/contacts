@@ -6,7 +6,7 @@ namespace ContactsApi.Services.Interfaces
 {
     public interface IAddressBookService
     {
-        Task<List<ContactDto>> GetContactsAsync(int? id);
+        Task<List<ContactDto>> GetContactsAsync(int? id, int? pageNumber = null, string search = null);
         Task<ContactDto> PostContactAsync(PostContactDto postContactDto);
         Task<int> DeleteContactAsync(DeleteContactDto deleteContactDto);
         Task<PutContactDto> PutContactAsync(PutContactDto putContactDto);

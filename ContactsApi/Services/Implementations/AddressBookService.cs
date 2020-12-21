@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using ContactsApi.Dtos;
+using ContactsApi.Helpers;
 using ContactsApi.Models;
 using ContactsApi.Repositories.Interfaces;
 using ContactsApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace ContactsApi.Services.Implementations
 {
@@ -16,41 +19,57 @@ namespace ContactsApi.Services.Implementations
         private readonly IContactsRepository _contactsRepository;
         private readonly IContactDataRepository _contactDataRepository;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
         public AddressBookService(
             IAddressBookDatabase addressBookDatabase,
             IContactsRepository contactsRepository,
             IContactDataRepository contactDataRepository,
-            IMapper mapper)
+            IMapper mapper,
+            IConfiguration configuration)
         {
             _addressBookDatabase = addressBookDatabase;
             _contactsRepository = contactsRepository;
             _contactDataRepository = contactDataRepository;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
-        public async Task<List<ContactDto>> GetContactsAsync(int? id)
+        public async Task<List<ContactDto>> GetContactsAsync(int? id, int? pageNumber = null, string search = null)
         {
-            List<Contact> contacts = await _contactsRepository
-                .GetContacts()
-                .Where(contact => !id.HasValue || contact.Id == id)
-                .ToListAsync();
-
-            IEnumerable<int> contactIds = contacts.Select(contact => contact.Id);
-            List<ContactData> contactData = await _contactDataRepository
-                .GetContactData()
-                .Where(contactData => contactIds.Contains(contactData.ContactId))
-                .ToListAsync();
-
             List<ContactDto> addressBook = new List<ContactDto>();
-            
-            contacts.ForEach(contact =>
+
+            if (string.IsNullOrWhiteSpace(search) || search.Length > 2)
             {
-                addressBook.Add(_mapper.Map<ContactDto>(contact));
-                
-                addressBook.Last().ContactData = _mapper.Map<IEnumerable<ContactDataDto>>(
-                    contactData.Where(contactData => contactData.ContactId == contact.Id));
-            });
+
+                var sqlSearch = $"%{search}%";
+
+                PaginatedList<Contact> contacts = await PaginatedList<Contact>.CreateAsync(
+                    _contactsRepository
+                        .GetContacts()
+                        .Where(contact =>
+                            EF.Functions.ILike(contact.FirstName, sqlSearch) ||
+                            EF.Functions.ILike(contact.Surname, sqlSearch) ||
+                            EF.Functions.ILike(contact.Street, sqlSearch) ||
+                            EF.Functions.ILike(contact.City, sqlSearch)),
+                    pageNumber ?? 1,
+                    _configuration.GetValue("PageSize", 10));
+
+                IEnumerable<int> contactIds = contacts.Select(contact => contact.Id);
+                List<ContactData> contactData = await _contactDataRepository
+                    .GetContactData()
+                    .Where(contactData => contactIds.Contains(contactData.ContactId))
+                    .ToListAsync();
+
+
+                contacts.ForEach(contact =>
+                {
+                    addressBook.Add(_mapper.Map<ContactDto>(contact));
+
+                    addressBook.Last().ContactData = _mapper.Map<IEnumerable<ContactDataDto>>(
+                        contactData.Where(contactData => contactData.ContactId == contact.Id));
+                });
+            }
 
             return addressBook;
         }

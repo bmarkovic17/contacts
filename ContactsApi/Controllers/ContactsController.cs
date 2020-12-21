@@ -24,6 +24,8 @@ namespace ContactsApi.Controllers
         /// <summary>
         /// Gets all contacts defined in the address book with their's corresponding contact data.
         /// </summary>
+        /// <param name="pageNumber">Specifies which page number should be returned</param>
+        /// <param name="search">Filters data on first name, surname, street and city and must be at least three characters in length.</param>
         /// <returns>An array of contacts with an array of contact data.</returns>
         /// <remarks>
         /// Sample request:
@@ -35,8 +37,8 @@ namespace ContactsApi.Controllers
         /// <response code="200">Data returned successfully (no data is also a correct response)</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<ContactDto>>> Get() =>
-            Ok(await _addressBookService.GetContactsAsync(null));
+        public async Task<ActionResult<IEnumerable<ContactDto>>> Get(int? pageNumber, string search) =>
+            Ok(await _addressBookService.GetContactsAsync(null, pageNumber, search));
 
         /// <summary>
         /// For given ID gets a single contact defined in the address book with his corresponding contact data.
