@@ -182,5 +182,38 @@ namespace ContactsApiTests
             // Assert
             Assert.True(contact.FirstName == "Paul", "Contact couldn't be updated.");
         }
+
+        [Fact]
+        public async Task GetContactDataForNonExistingContactAsync()
+        {
+            // Arrange
+            var contactId = 0;
+            List<ContactDataDto> contactData = null;
+
+            // Act
+            try
+            {
+                contactData = await _addressBookService.GetContactDataAsync(contactId);
+            }
+            catch (Exception)
+            {
+            }
+
+            // Assert
+            Assert.True(contactData is null, "Contact data for non existing client does exist.");
+        }
+
+        [Fact]
+        public async Task GetContactDataForExistingContactAsync()
+        {
+            // Arrange
+            var contactId = 1;
+
+            // Act
+            var contactData = await _addressBookService.GetContactDataAsync(contactId);
+
+            // Assert
+            Assert.True(contactData.Count >= 0, "Contact doesn't exist.");
+        }
     }
 }

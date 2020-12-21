@@ -20,22 +20,69 @@ namespace ContactsApi.Controllers
             _addressBookService = addressBookService;
 
         /// <summary>
-        /// For given ID gets a single contact defined in the address book with his corresponding contact data.
+        /// For given contact ID gets an array of contact data defined in the address book.
         /// </summary>
         /// <param name="contactId">Contact ID for which contact data is fetched.</param>
-        /// <returns>A contact with an array of contact data.</returns>
+        /// <returns>An array of contact data.</returns>
         /// <remarks>
         /// Sample request:
         /// 
-        ///     GET /api/Contacts/1
+        ///     GET /api/ContactsData?contactId=1
         ///     {
         ///     }
         /// </remarks>
-        /// <response code="200">Data returned successfully</response>
+        /// <response code="200">Contact data returned successfully</response>
         /// <response code="404">Contact not found</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<ContactDataDto>>> Get(int contactId)=>
-            Ok(await _addressBookService.GetContactDataAsync(contactId));
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ContactDataDto>>> Get(int contactId)
+        {
+            ActionResult response;
+            
+            try
+            {
+                response = Ok(await _addressBookService.GetContactDataAsync(contactId));
+
+            }
+            catch (Exception ex)
+            {
+                ProblemDetails problemDetails;
+
+                if (ex.GetBaseException() is InvalidOperationException)
+                {
+                    problemDetails = new ProblemDetails
+                    {
+                        Status = StatusCodes.Status404NotFound,
+                        Title = "Contact not found",
+                        Detail = $"Contact with ID {contactId} doesn't exist.",
+                        Instance = HttpContext.Request.Path
+                    };
+
+                    response = new ObjectResult(problemDetails)
+                    {
+                        ContentTypes = { "application/problem+json" },
+                        StatusCode = StatusCodes.Status404NotFound
+                    };
+                }
+                else
+                {
+                    problemDetails = new ProblemDetails
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Title = "There was an error during the fetching process",
+                        Instance = HttpContext.Request.Path
+                    };
+
+                    response = new ObjectResult(problemDetails)
+                    {
+                        ContentTypes = { "application/problem+json" },
+                        StatusCode = StatusCodes.Status400BadRequest
+                    };
+                }
+            }
+
+            return response;
+        }
     }
 }
